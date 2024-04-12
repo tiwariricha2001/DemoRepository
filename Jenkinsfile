@@ -1,35 +1,42 @@
 pipeline {
     agent any
-
+    tools {
+        maven "MAVEN_HOME"
+    }
     stages {
         stage('Build') {
             steps {
-                // Use Maven to build the application
-                bat 'mvn clean install'
+                // Clean and build the Maven project
+                bat 'mvn clean package'
             }
         }
-
         stage('Test') {
             steps {
-                // Set up the environment (e.g., download dependencies, set up WebDriver)
-                bat 'choco install selenium-all-drivers -y' // Install Selenium WebDriver via Chocolatey
-                bat 'choco install chromedriver -y' // Install ChromeDriver via Chocolatey
-                
-                // Run the test class with TestNG
-                bat 'mvn test -Dtest=AmazonWebsiteTest'
+                // Run tests
+                bat 'mvn test'
             }
-            post {
-                // Fail the pipeline if any tests fail
-                failure {
-                    echo 'Tests failed! Pipeline will fail.'
-                    currentBuild.result = 'FAILED'
-                }
+        }
+        stage('Deploy') {
+           steps {
+               // Placeholder for deployment steps
+              // Replace this with your deployment script or commands
+               echo 'Deploying the application...'
+            }
+        }
+        stage('Clean Up') {
+            steps {
+                // Clean up any temporary files or resources
+                bat 'mvn clean'
             }
         }
     }
-
-    // Automatically trigger the pipeline whenever changes are pushed to the repository
-    triggers {
-        scm('*/5 * * * *') // Poll SCM every 5 minutes (adjust as needed)
+    post {
+        success {
+            echo 'Pipeline executed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
     }
 }
+has context menu
