@@ -7,7 +7,7 @@ pipeline {
         stage('Build') {
             steps {
                 // Clean and build the Maven project
-                bat 'mvn clean package -f demoProject/pom.xml'
+                bat 'mvn clean package'
             }
         }
         stage('Test') {
